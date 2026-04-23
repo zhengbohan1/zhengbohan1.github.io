@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>城市景点三维可视化系统 | ArcGIS Maps SDK for JavaScript</title>
+
+    <!-- Load the ArcGIS Maps SDK for JavaScript from CDN -->
+    <script type="module" src="https://js.arcgis.com/5.0/"></script>
+
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+      }
+
+      /* ================= 页面三区域布局 ================= */
+      .page-container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        width: 100vw;
+      }
+
+      /* 页眉区域 */
+      .page-header {
+        height: 60px;
+        background: linear-gradient(90deg, #0d47a1 0%, #1976d2 100%);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        z-index: 100;
+        flex-shrink: 0;
+      }
+      .page-header h1 {
+        margin: 0;
+        font-size: 1.35rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+      }
+      .page-header .sub-title {
+        font-size: 0.85rem;
+        opacity: 0.9;
+      }
+
+      /* 主体：地图区域 + 底图库区域 */
+      .main-content {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      /* 地图区域 */
+      .map-wrapper {
+        flex: 1;
+        position: relative;
+        min-width: 0;
+        background: #e0e0e0;
+      }
+      .map-wrapper arcgis-scene {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* 底图库区域 */
+      .basemap-panel {
+        width: 300px;
+        background: #f8f9fa;
+        border-left: 1px solid #dee2e6;
+        display: flex;
+        flex-direction: column;
+        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.08);
+        z-index: 50;
+      }
+      .basemap-panel-header {
+        padding: 14px 16px;
+        background: #ffffff;
+        border-bottom: 1px solid #e9ecef;
+        font-weight: 700;
+        font-size: 1rem;
+        color: #212529;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      #basemapGalleryContainer {
+        flex: 1;
+        overflow-y: auto;
+        padding: 10px;
+      }
+
+      /* 控制卡片样式 */
+      #cityStyleCard {
+        max-width: 520px;
+        backdrop-filter: blur(8px);
+        background: rgba(255, 255, 255, 0.95);
+      }
+      #checkboxContainer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6em 1.2em;
+        padding: 10px 12px;
+        font-size: 0.9em;
+        align-items: center;
+      }
+      #checkboxContainer calcite-select {
+        width: 150px;
+      }
+      #checkboxContainer calcite-label {
+        margin: 0;
+        color: #333;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="page-container">
+      <!-- 区域一：页眉 -->
+      <header class="page-header">
+        <div class="header-left">
+          <h1>🏙️ 城市景点三维可视化系统</h1>
+        </div>
+        <div class="header-right">
+          <span class="sub-title">ArcGIS Maps SDK for JavaScript</span>
+        </div>
+      </header>
+
+      <!-- 区域二 & 三：地图区域 + 底图库区域 -->
+      <div class="main-content">
+        <div class="map-wrapper">
+          <arcgis-scene item-id="711ddecedece4fd88b728bfe4322c22b">
+            <!-- 左上：导航微件组 -->
+            <arcgis-zoom slot="top-left"></arcgis-zoom>
+            <arcgis-navigation-toggle slot="top-left"></arcgis-navigation-toggle>
+            <arcgis-compass slot="top-left"></arcgis-compass>
+
+            <!-- 右上：搜索框 & 图层列表（可折叠，避免冲突） -->
+            <arcgis-search slot="top-right" placeholder="搜索地点、地址或坐标..."></arcgis-search>
+            <arcgis-expand heading="📋 图层列表" slot="top-right">
+              <arcgis-layer-list></arcgis-layer-list>
+            </arcgis-expand>
+
+            <!-- 右下：比例尺 & 图例（可折叠，避免冲突） -->
+            <arcgis-scale-bar slot="bottom-right" unit="metric"></arcgis-scale-bar>
+            <arcgis-expand heading="🗺️ 图例" slot="bottom-right">
+              <arcgis-legend></arcgis-legend>
+            </arcgis-expand>
+
+            <!-- 左下：样式控制面板（已中文化） -->
+            <calcite-card id="cityStyleCard" slot="bottom-left">
+              <div slot="title" style="font-weight: 700; color: #1565c0;">🎨 景点样式控制</div>
+              <div id="checkboxContainer">
+                <calcite-label scale="s" layout="inline">
+                  <calcite-checkbox scale="s" id="callout" checked></calcite-checkbox>
+                  显示图标标注线
+                </calcite-label>
+                <calcite-label scale="s" layout="inline">
+                  <calcite-checkbox scale="s" id="declutter" checked></calcite-checkbox>
+                  启用自动避让
+                </calcite-label>
+                <calcite-label scale="s" layout="inline">
+                  <calcite-checkbox scale="s" id="perspective" checked></calcite-checkbox>
+                  改善图标透视
+                </calcite-label>
+                <calcite-label scale="s" layout="inline">
+                  <calcite-checkbox scale="s" id="relative-to-scene" checked></calcite-checkbox>
+                  图标与建筑对齐
+                </calcite-label>
+                <calcite-label scale="s" layout="inline">
+                  遮挡可见性
+                  <calcite-select scale="s" id="occluded-visibility" value="adaptive">
+                    <calcite-option value="adaptive">自适应</calcite-option>
+                    <calcite-option value="visible">可见</calcite-option>
+                    <calcite-option value="hidden">隐藏</calcite-option>
+                  </calcite-select>
+                </calcite-label>
+              </div>
+            </calcite-card>
+          </arcgis-scene>
+        </div>
+
+        <!-- 区域三：底图库侧边栏 -->
+        <aside class="basemap-panel">
+          <div class="basemap-panel-header">🌐 底图库</div>
+          <div id="basemapGalleryContainer"></div>
+        </aside>
+      </div>
+    </div>
+
+    <script type="module">
+      const [FeatureLayer, UniqueValueRenderer, BasemapGallery, Basemap] = await $arcgis.import([
+        "@arcgis/core/layers/FeatureLayer.js",
+        "@arcgis/core/renderers/UniqueValueRenderer.js",
+        "@arcgis/core/widgets/BasemapGallery.js",
+        "@arcgis/core/Basemap.js",
+      ]);
+
+      /*****************************************************************
+       * 获取 HTML 元素引用
+       *****************************************************************/
+      const viewElement = document.querySelector("arcgis-scene");
+      const cityStyleCard = document.getElementById("cityStyleCard");
+
+      // 图标垂直偏移配置
+      const verticalOffset = {
+        screenLength: 40,
+        maxWorldLength: 200,
+        minWorldLength: 35,
+      };
+
+      // 等待场景视图初始化完成
+      await viewElement.viewOnReady();
+
+      /*****************************************************************
+       * 底图库：挂载到右侧边栏，提供多种可选底图
+       *****************************************************************/
+      const basemapGallery = new BasemapGallery({
+        view: viewElement.view,
+        container: document.getElementById("basemapGalleryContainer"),
+        source: [
+          Basemap.fromId("satellite"),          // 卫星影像
+          Basemap.fromId("hybrid"),             // 混合影像
+          Basemap.fromId("terrain"),            // 地形图
+          Basemap.fromId("oceans"),             // 海洋图
+          Basemap.fromId("osm"),                // OpenStreetMap
+          Basemap.fromId("dark-gray-vector"),   // 深灰底图
+          Basemap.fromId("streets-vector"),     // 街道图
+          Basemap.fromId("topo-vector"),        // 地形矢量
+          Basemap.fromId("streets-night-vector")// 夜间街道
+        ]
+      });
+
+      /*****************************************************************
+       * 设置兴趣点图层的渲染器（UniqueValueRenderer）
+       *****************************************************************/
+      const pointsRenderer = {
+        type: "unique-value",
+        field: "Type",
+        uniqueValueInfos: [
+          {
+            value: "Museum",
+            label: "博物馆",
+            symbol: getUniqueValueSymbol(
+              "https://developers.arcgis.com/javascript/latest/assets/sample-code/visualization-point-styles/Museum.png",
+              "#D13470",
+            ),
+          },
+          {
+            value: "Restaurant",
+            label: "餐厅",
+            symbol: getUniqueValueSymbol(
+              "https://developers.arcgis.com/javascript/latest/assets/sample-code/visualization-point-styles/Restaurant.png",
+              "#F97C5A",
+            ),
+          },
+          {
+            value: "Church",
+            label: "教堂",
+            symbol: getUniqueValueSymbol(
+              "https://developers.arcgis.com/javascript/latest/assets/sample-code/visualization-point-styles/Church.png",
+              "#884614",
+            ),
+          },
+          {
+            value: "Hotel",
+            label: "酒店",
+            symbol: getUniqueValueSymbol(
+              "https://developers.arcgis.com/javascript/latest/assets/sample-code/visualization-point-styles/Hotel.png",
+              "#56B2D6",
+            ),
+          },
+          {
+            value: "Park",
+            label: "公园",
+            symbol: getUniqueValueSymbol(
+              "https://developers.arcgis.com/javascript/latest/assets/sample-code/visualization-point-styles/Park.png",
+              "#40C2B4"
+            ),
+          },
+        ],
+      };
+
+      /*****************************************************************
+       * 创建兴趣点图层并添加到地图
+       *****************************************************************/
+      const pointsLayer = new FeatureLayer({
+        url: "http://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/LyonPointsOfInterest/FeatureServer",
+        title: "城市旅游景点",
+        elevationInfo: {
+          mode: "relative-to-scene",
+        },
+        renderer: pointsRenderer,
+        outFields: ["*"],
+        featureReduction: {
+          type: "selection",
+        },
+        labelingInfo: [
+          {
+            labelExpressionInfo: {
+              value: "{Name}",
+            },
+            symbol: {
+              type: "label-3d",
+              symbolLayers: [
+                {
+                  type: "text",
+                  material: {
+                    color: "white",
+                  },
+                  halo: {
+                    size: 1,
+                    color: [50, 50, 50],
+                  },
+                  size: 10,
+                  occludedVisibility: {
+                    mode: "adaptive",
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      });
+
+      viewElement.map.add(pointsLayer);
+
+      /*****************************************************************
+       * 控制面板事件绑定：自动避让、透视、标注线、建筑对齐
+       *****************************************************************/
+      cityStyleCard.addEventListener("calciteCheckboxChange", (event) => {
+        const id = event.target.id;
+        if (id === "declutter") {
+          const type = { type: "selection" };
+          pointsLayer.featureReduction = event.target.checked ? type : null;
+        } else if (id === "perspective") {
+          pointsLayer.screenSizePerspectiveEnabled = event.target.checked;
+        } else if (id === "callout") {
+          const renderer = pointsLayer.renderer.clone();
+          renderer.uniqueValueInfos.forEach((valueInfo) => {
+            valueInfo.symbol.verticalOffset = event.target.checked ? verticalOffset : null;
+          });
+          pointsLayer.renderer = renderer;
+        } else if (id === "relative-to-scene") {
+          const mode = event.target.checked ? "relative-to-scene" : "relative-to-ground";
+          pointsLayer.elevationInfo = { mode: mode };
+        }
+      });
+
+      /*****************************************************************
+       * 控制面板事件绑定：遮挡可见性下拉框
+       *****************************************************************/
+      cityStyleCard.addEventListener("calciteSelectChange", (event) => {
+        const id = event.target.id;
+        if (id === "occluded-visibility") {
+          const mode = event.target.value;
+
+          // 更新图标符号的遮挡模式
+          const renderer = pointsLayer.renderer.clone();
+          renderer.uniqueValueInfos.forEach((valueInfo) => {
+            valueInfo.symbol.symbolLayers.forEach((iconSymbolLayer) => {
+              iconSymbolLayer.occludedVisibility = { mode: mode };
+            });
+          });
+          pointsLayer.renderer = renderer;
+
+          // 更新标注的遮挡模式
+          const labelClass = pointsLayer.labelingInfo[0].clone();
+          labelClass.symbol.symbolLayers.forEach((textSymbolLayer) => {
+            textSymbolLayer.occludedVisibility = { mode: mode };
+          });
+          pointsLayer.labelingInfo = [labelClass];
+        }
+      });
+
+      /*****************************************************************
+       * 辅助函数：生成唯一值三维点符号
+       *****************************************************************/
+      function getUniqueValueSymbol(name, color) {
+        return {
+          type: "point-3d",
+          symbolLayers: [
+            {
+              type: "icon",
+              resource: { href: name },
+              size: 20,
+              outline: { color: "white", size: 2 },
+              occludedVisibility: { mode: "adaptive" },
+            },
+          ],
+          verticalOffset: verticalOffset,
+          callout: {
+            type: "line",
+            color: "white",
+            size: 2,
+            border: { color: color },
+          },
+        };
+      }
+    </script>
+  </body>
+</html>
