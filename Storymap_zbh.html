@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鳌太线 · 行走在中华龙脊上的生死考验</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="scroll-progress"><div class="progress-bar"></div></div>
+
+    <nav class="side-nav" id="sideNav">
+        <div class="nav-logo">鳌太</div>
+        <div class="nav-links">
+            <button class="nav-link active" data-target="hero"><span class="nav-dot"></span><span class="nav-text">序幕</span></button>
+            <button class="nav-link" data-target="ch1"><span class="nav-dot"></span><span class="nav-text">龙脊</span></button>
+            <button class="nav-link" data-target="ch2"><span class="nav-dot"></span><span class="nav-text">征途</span></button>
+            <button class="nav-link" data-target="ch3"><span class="nav-dot"></span><span class="nav-text">险境</span></button>
+            <button class="nav-link" data-target="ch4"><span class="nav-dot"></span><span class="nav-text">冰川</span></button>
+            <button class="nav-link" data-target="ch5"><span class="nav-dot"></span><span class="nav-text">禁令</span></button>
+        </div>
+    </nav>
+
+    <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-badge">秦岭 · 中国南北分界线</div>
+            <h1 class="hero-title">鳌太线</h1>
+            <p class="hero-subtitle">行走在中华龙脊上的生死考验</p>
+            <p class="hero-desc">一条纵贯秦岭鳌山与太白山的徒步路线，直线距离40公里，实际穿越170公里，翻越17座海拔3400米以上山峰——被誉为"中华龙脊"，亦被称为"死亡线路"</p>
+            <div class="hero-stats">
+                <div class="hero-stat"><span class="hs-num" data-target="170">0</span><span class="hs-unit">km</span><span class="hs-label">实际穿越距离</span></div>
+                <div class="hero-stat"><span class="hs-num" data-target="17">0</span><span class="hs-unit">座</span><span class="hs-label">海拔3400m+山峰</span></div>
+                <div class="hero-stat"><span class="hs-num" data-target="3771">0</span><span class="hs-unit">m</span><span class="hs-label">最高点拔仙台</span></div>
+                <div class="hero-stat"><span class="hs-num danger-num" data-target="46">0</span><span class="hs-unit">人+</span><span class="hs-label">2012-2017遇难失踪</span></div>
+            </div>
+            <div class="hero-scroll">
+                <span>向下滚动探索</span>
+                <div class="scroll-arrow"></div>
+            </div>
+        </div>
+    </section>
+
+    <div class="chapter-divider"></div>
+
+    <section class="chapter" id="ch1">
+        <div class="chapter-header">
+            <span class="ch-num">01</span>
+            <div class="ch-title-wrap">
+                <h2 class="ch-title">中华龙脊</h2>
+                <p class="ch-subtitle">秦岭主脊上的传奇之路</p>
+            </div>
+        </div>
+        <div class="ch-body map-story-layout">
+            <div class="map-panel">
+                <div class="map-wrapper">
+                    <div class="map-controls">
+                        <button class="map-ctrl-btn active" data-layer="dark" data-map="overview" title="深色图"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 010 20"/><path d="M12 2a15 15 0 000 20"/></svg></button>
+                        <button class="map-ctrl-btn" data-layer="satellite" data-map="overview" title="地形图"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></button>
+                        <button class="map-ctrl-btn" data-layer="danger" data-map="overview" title="危险区域"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></button>
+                    </div>
+                    <div id="map-overview" class="story-map"></div>
+                    <div class="map-legend" id="legend-overview">
+                        <div class="legend-title">图例</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>起点</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>终点</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>山峰</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>营地</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>危险区</div>
+                        <div class="legend-item"><div class="legend-line" style="background:#06b6d4"></div>穿越路线</div>
+                        <div class="legend-item"><div class="legend-dashed" style="border-color:#ef4444"></div>危险区域</div>
+                    </div>
+                    <div class="interactive-hint"><span class="hint-icon">👆</span>点击标记点查看详情 · 切换图层探索更多</div>
+                    <div class="map-info-panel" id="overview-info">
+                        <div class="info-header"><span class="info-icon">📍</span><span class="info-title">路线总览</span></div>
+                        <div class="info-body">
+                            <div class="info-row"><span class="info-label">起点</span><span class="info-value">塘口村 (1740m)</span></div>
+                            <div class="info-row"><span class="info-label">终点</span><span class="info-value">拔仙台 (3771m)</span></div>
+                            <div class="info-row"><span class="info-label">直线距离</span><span class="info-value">40 km</span></div>
+                            <div class="info-row"><span class="info-label">实际距离</span><span class="info-value">170 km</span></div>
+                            <div class="info-row"><span class="info-label">穿越天数</span><span class="info-value">6-7 天</span></div>
+                            <div class="info-row"><span class="info-label">累计爬升</span><span class="info-value">4000m+</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-panel">
+                <div class="cp-section">
+                    <h3>秦岭之巅的龙脊</h3>
+                    <p>鳌太线，"鳌"指鳌山，"太"指太白山。这条纵贯秦岭两大主峰之间的山脊徒步路线，蜿蜒于秦岭主脊之上，形似巨龙脊背，被户外爱好者尊称为"中华龙脊"。</p>
+                    <p>太白山主峰拔仙台海拔3771.2米，是中国大陆东半壁的最高峰，位于秦岭中段，地处周至、太白和眉县的交界处。鳌山（西太白）标志塔海拔3476米，位于秦岭西段宝鸡太白县境内，是秦岭第二高峰。从鳌山穿越到太白山的直线距离仅40余公里，实际穿越行程却超过170公里。</p>
+                    <p>鳌太线横穿太白山国家自然保护区核心区，地处华北、华中、青藏高原三区生物交汇过渡区，整个生态系统完整、稳定、生物多样性丰富。鳌太穿越以其独特的自然地理条件、高耸入云的雄伟气势和瞬息万变的气候神姿，自古以来被披上了一层神秘的色彩。</p>
+                </div>
+                <div class="cp-section">
+                    <h3>从鳌山到太白</h3>
+                    <p>鳌山以爬升难、坡度陡、沿途没有补给点著称，太白山则以路线绵延、景色绝妙闻名。两山东西对峙、山水相连，以险、奇、秀、幽的神奇风韵和磅礴之势冠列大秦岭群峰之首，有"东方阿尔卑斯山脉"之称。</p>
+                    <blockquote>"绵延千里的大秦岭，东太白拔仙台是它不灭的灵魂和龙头，西太白鳌山是它不屈的脊梁和强壮的心脏。"<footer>— 李明绪《东西太白》</footer></blockquote>
+                </div>
+                <div class="elevation-chart">
+                    <canvas id="elevationCanvas" width="600" height="180"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="chapter-divider"></div>
+
+    <section class="chapter chapter-dark" id="ch2">
+        <div class="chapter-header">
+            <span class="ch-num">02</span>
+            <div class="ch-title-wrap">
+                <h2 class="ch-title">逐日征途</h2>
+                <p class="ch-subtitle">六天穿越生死路</p>
+            </div>
+        </div>
+        <div class="ch-body">
+            <div class="day-progress-bar" id="dayProgressBar">
+                <div class="dpb-segment completed"></div>
+                <div class="dpb-segment"></div>
+                <div class="dpb-segment"></div>
+                <div class="dpb-segment"></div>
+                <div class="dpb-segment"></div>
+                <div class="dpb-segment"></div>
+            </div>
+            <div class="day-tabs">
+                <button class="day-tab active" data-day="1">Day 1<br><small>塘口→药王洞</small></button>
+                <button class="day-tab" data-day="2">Day 2<br><small>药王洞→2800</small></button>
+                <button class="day-tab" data-day="3">Day 3<br><small>2800→东塬</small></button>
+                <button class="day-tab" data-day="4">Day 4<br><small>东塬→跑马梁</small></button>
+                <button class="day-tab" data-day="5">Day 5<br><small>跑马梁→玉皇池</small></button>
+                <button class="day-tab" data-day="6">Day 6<br><small>玉皇池→拔仙台</small></button>
+            </div>
+            <div class="day-content map-story-layout">
+                <div class="map-panel">
+                    <div class="map-wrapper">
+                        <div class="map-controls">
+                            <button class="map-ctrl-btn active" data-layer="base" data-map="day" title="深色图"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 010 20"/><path d="M12 2a15 15 0 000 20"/></svg></button>
+                            <button class="map-ctrl-btn" data-layer="satellite" data-map="day" title="地形图"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="8" cy="8" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="10" cy="15" r="1"/></svg></button>
+                        </div>
+                        <div id="map-day" class="story-map"></div>
+                        <div class="map-legend" id="legend-day">
+                            <div class="legend-title">当日路线</div>
+                            <div class="legend-item"><div class="legend-line" style="background:#06b6d4"></div>当日路段</div>
+                            <div class="legend-item"><div class="legend-line" style="background:rgba(100,116,139,0.4)"></div>其余路段</div>
+                            <div class="legend-item"><div class="legend-dot" style="background:#06b6d4"></div>途经点</div>
+                        </div>
+                        <div class="interactive-hint"><span class="hint-icon">👆</span>切换Day标签查看每日路线</div>
+                    </div>
+                </div>
+                <div class="content-panel day-detail" id="dayDetail">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="chapter-divider"></div>
+
+    <section class="chapter" id="ch3">
+        <div class="chapter-header">
+            <span class="ch-num">03</span>
+            <div class="ch-title-wrap">
+                <h2 class="ch-title">死亡之脊</h2>
+                <p class="ch-subtitle">气候·地形·事故</p>
+            </div>
+        </div>
+        <div class="ch-body map-story-layout">
+            <div class="map-panel">
+                <div class="map-wrapper">
+                    <div class="map-controls">
+                        <button class="map-ctrl-btn active" data-layer="dark" data-map="danger" title="深色图"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 010 20"/><path d="M12 2a15 15 0 000 20"/></svg></button>
+                        <button class="map-ctrl-btn" data-layer="terrain" data-map="danger" title="地形图"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></button>
+                        <button class="map-ctrl-sep"></button>
+                        <button class="map-ctrl-btn active" data-layer="accidents" data-map="danger" title="事故点"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></button>
+                        <button class="map-ctrl-btn" data-layer="climate" data-map="danger" title="气候区"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/></svg></button>
+                        <button class="map-ctrl-btn" data-layer="terrain-risk" data-map="danger" title="地形风险"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 22h20L12 2z"/></svg></button>
+                    </div>
+                    <div id="map-danger" class="story-map"></div>
+                    <div class="map-legend" id="legend-danger">
+                        <div class="legend-title">风险图例</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>遇难事故</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>失踪事件</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>遇险救援</div>
+                        <div class="legend-item"><div class="legend-dashed" style="border-color:#ef4444"></div>极危险区</div>
+                        <div class="legend-item"><div class="legend-dashed" style="border-color:#f59e0b"></div>高危险区</div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-panel">
+                <div class="cp-section">
+                    <h3>一日历四季，十里不同天</h3>
+                    <p>秦岭作为中国南北地理分界线，其核心功能在鳌太线上体现得淋漓尽致。南北两股性质截然不同的气流在此激烈交锋，导致天气瞬息万变。鳌太区域气候比一般高山地区更复杂且多变，一天有四季，常年出现狂风、大雨、冰雹、暴雨、浓雾、冰雪等恶劣天气。</p>
+                    <p>海拔3350米以上呈寒带气候，全年平均气温不超过8℃，自10月至翌年4月平均气温都处于零下，极端寒冷气温可能达到-30℃左右。如果遇到强冷空气，山顶上的风速可达7~8级，夜间温度可降至-20~-18℃。全年约30%的时间，山脊能见度不足50米。</p>
+                </div>
+                <div class="danger-grid">
+                    <div class="danger-card">
+                        <div class="dc-icon">❄️</div>
+                        <div class="dc-pct">47%</div>
+                        <div class="dc-label">失温</div>
+                        <div class="dc-desc">最大致死原因，气温骤降、能见度急剧下降是常态</div>
+                    </div>
+                    <div class="danger-card">
+                        <div class="dc-icon">🪨</div>
+                        <div class="dc-pct">32%</div>
+                        <div class="dc-label">滑坠</div>
+                        <div class="dc-desc">石海遍布、刃脊横切，稍有不慎即坠崖</div>
+                    </div>
+                    <div class="danger-card">
+                        <div class="dc-icon">🫁</div>
+                        <div class="dc-pct">15%</div>
+                        <div class="dc-label">高山病</div>
+                        <div class="dc-desc">高原肺水肿、脑水肿等，海拔骤升引发</div>
+                    </div>
+                    <div class="danger-card">
+                        <div class="dc-icon">🧭</div>
+                        <div class="dc-pct">6%</div>
+                        <div class="dc-label">迷路</div>
+                        <div class="dc-desc">浓雾弥漫、无参照物，迷路后并发症致命</div>
+                    </div>
+                </div>
+                <div class="cp-section">
+                    <h3>触目惊心的事故数据</h3>
+                    <div class="timeline">
+                        <div class="tl-item"><span class="tl-year">2002-2008</span><span class="tl-text">41人遇险，14人遇难</span></div>
+                        <div class="tl-item"><span class="tl-year">2012-2017</span><span class="tl-text">46人失踪或遇难</span></div>
+                        <div class="tl-item"><span class="tl-year">2018-2024</span><span class="tl-text">禁令后仍有12人遇难</span></div>
+                        <div class="tl-item tl-highlight"><span class="tl-year">2025-2026</span><span class="tl-text">多起失温、失踪、死亡事件持续发生</span></div>
+                    </div>
+                    <p>超过60%的遇难者具有3-5年户外经验，而非新手。过度自信与经验误判，成为一些"老驴"殒命的主要原因。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="chapter-divider"></div>
+
+    <section class="chapter chapter-dark" id="ch4">
+        <div class="chapter-header">
+            <span class="ch-num">04</span>
+            <div class="ch-title-wrap">
+                <h2 class="ch-title">冰川遗迹</h2>
+                <p class="ch-subtitle">第四纪冰川雕琢的天然博物馆</p>
+            </div>
+        </div>
+        <div class="ch-body map-story-layout">
+            <div class="map-panel">
+                <div class="map-wrapper">
+                    <div class="map-controls">
+                        <button class="map-ctrl-btn active" data-layer="base" data-map="geo" title="地形图"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="8" cy="8" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="10" cy="15" r="1"/></svg></button>
+                        <button class="map-ctrl-btn" data-layer="satellite" data-map="geo" title="深色图"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 010 20"/><path d="M12 2a15 15 0 000 20"/></svg></button>
+                    </div>
+                    <div id="map-geo" class="story-map"></div>
+                    <div class="map-legend" id="legend-geo">
+                        <div class="legend-title">地质图例</div>
+                        <div class="legend-item"><div class="legend-dashed" style="border-color:#f59e0b"></div>石海区</div>
+                        <div class="legend-item"><div class="legend-dashed" style="border-color:#ef4444"></div>刃脊区</div>
+                        <div class="legend-item"><div class="legend-dashed" style="border-color:#10b981"></div>草甸区</div>
+                        <div class="legend-item"><div class="legend-dashed" style="border-color:#3b82f6"></div>冰斗湖群</div>
+                        <div class="legend-item"><div class="legend-dashed" style="border-color:#8b5cf6"></div>冰川遗迹</div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-panel">
+                <div class="cp-section">
+                    <h3>第四纪冰川的杰作</h3>
+                    <p>鳌太线所在区域经历了第四纪冰川的反复雕琢，山体呈现出陡峭凌厉的特质。从拔仙台至鳌山区域，地表广泛分布大小不一的棱角状砾块，构成独特的石海景观。这里保存着完整的第四纪冰川遗迹——深邃如眸的冰斗、尖锐挺拔的角峰、幽深狭长的槽谷、蜿蜒曲折的冰碛堤。</p>
+                    <p>鳌山从山脚塘口镇（海拔1740米）出发，短短十几公里内海拔就要飙升1700多米，平均坡度超过30度，宛如一座垂直耸立的石墙。太白山山体更为宽厚，路线绵延数十公里，保留了更完整的第四纪冰川遗迹。</p>
+                </div>
+                <div class="geo-features">
+                    <div class="geo-card">
+                        <div class="gc-title">石海</div>
+                        <div class="gc-pct">30%</div>
+                        <div class="gc-desc">光滑难行的巨石区，石块彼此间并非稳固连接，踩上去极易翻滚</div>
+                    </div>
+                    <div class="geo-card">
+                        <div class="gc-title">刃脊横切</div>
+                        <div class="gc-pct">40%</div>
+                        <div class="gc-desc">狭窄山脊，最窄处仅容一人通过，两侧为断崖，一侧山体一侧悬崖</div>
+                    </div>
+                    <div class="geo-card">
+                        <div class="gc-title">高山草甸</div>
+                        <div class="gc-pct">30%</div>
+                        <div class="gc-desc">跑马梁区域，近百万亩高山草甸，看似平坦实则缺乏遮挡</div>
+                    </div>
+                </div>
+                <div class="cp-section">
+                    <h3>垂直自然带谱</h3>
+                    <p>鳌太线地处华北、华中、青藏高原三区生物交汇过渡区，从山脚到山顶分布着5个垂直自然带，几乎各地的精华景观都浓缩于此：森林、竹林、松林、草甸、石海、小溪、瀑布、湖泊、大雪……还有数不尽的珍稀鸟兽、奇珍草木。</p>
+                    <div class="vertical-zones">
+                        <div class="vz-item" style="--zone-color: #27ae60"><span class="vz-alt">&lt;2000m</span><span class="vz-name">落叶阔叶林带</span></div>
+                        <div class="vz-item" style="--zone-color: #2ecc71"><span class="vz-alt">2000-2600m</span><span class="vz-name">针阔混交林带</span></div>
+                        <div class="vz-item" style="--zone-color: #1abc9c"><span class="vz-alt">2600-3200m</span><span class="vz-name">亚高山针叶林带</span></div>
+                        <div class="vz-item" style="--zone-color: #f39c12"><span class="vz-alt">3200-3500m</span><span class="vz-name">高山灌丛草甸带</span></div>
+                        <div class="vz-item" style="--zone-color: #e74c3c"><span class="vz-alt">&gt;3500m</span><span class="vz-name">高山寒冻带</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="chapter-divider"></div>
+
+    <section class="chapter" id="ch5">
+        <div class="chapter-header">
+            <span class="ch-num">05</span>
+            <div class="ch-title-wrap">
+                <h2 class="ch-title">禁令与敬畏</h2>
+                <p class="ch-subtitle">生命不可任性</p>
+            </div>
+        </div>
+        <div class="ch-body map-story-layout">
+            <div class="map-panel">
+                <div class="map-wrapper">
+                    <div class="map-controls">
+                        <button class="map-ctrl-btn active" data-layer="base" data-map="ban" title="深色图"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 010 20"/><path d="M12 2a15 15 0 000 20"/></svg></button>
+                        <button class="map-ctrl-btn" data-layer="terrain" data-map="ban" title="地形图"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><circle cx="8" cy="8" r="2"/><circle cx="16" cy="12" r="2"/><circle cx="10" cy="15" r="1"/></svg></button>
+                    </div>
+                    <div id="map-ban" class="story-map"></div>
+                    <div class="map-legend" id="legend-ban">
+                        <div class="legend-title">禁令图例</div>
+                        <div class="legend-item"><div class="legend-dashed" style="border-color:#ef4444"></div>禁止穿越区域</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#ef4444">🚫</div>执法检查点</div>
+                        <div class="legend-item"><div class="legend-line" style="background:#ef4444"></div>违规路线</div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-panel">
+                <div class="cp-section">
+                    <h3>禁令高悬</h3>
+                    <p>2018年4月16日，陕西太白山国家级自然保护区管理局、陕西省森林公安局第二分局发布禁止"鳌太穿越"的公告。2024年，相关规定进一步加码，严禁在海拔2000米以上区域开展违规探险。2025年实施"非法穿越黑名单"制度，违规者不仅面临罚款，信息还将共享至交通、金融等多部门。</p>
+                </div>
+                <div class="law-timeline">
+                    <div class="lt-item">
+                        <div class="lt-year">2018</div>
+                        <div class="lt-text">太白山保护区管理局与森林公安局联合发布禁止鳌太穿越公告</div>
+                    </div>
+                    <div class="lt-item">
+                        <div class="lt-year">2018-2022</div>
+                        <div class="lt-text">共劝返1785人次，105人被罚款</div>
+                    </div>
+                    <div class="lt-item">
+                        <div class="lt-year">2024</div>
+                        <div class="lt-text">严禁在海拔2000米以上区域开展违规探险活动</div>
+                    </div>
+                    <div class="lt-item lt-highlight">
+                        <div class="lt-year">2025</div>
+                        <div class="lt-text">实施"非法穿越黑名单"制度，违规信息多部门共享</div>
+                    </div>
+                </div>
+                <div class="cp-section">
+                    <h3>为何屡禁不止</h3>
+                    <p>部分徒步者被"征服自然"的虚荣心裹挟，将违规穿越鳌太线视为"炫耀资本"。社交媒体的误导性炒作，更是加剧了冒险行为的发生。一些商业团队为了牟利，公然组织非法穿越活动，将徒步者的生命安全抛诸脑后。"不会出事"的侥幸心理，成了压垮很多人的最后一根稻草。</p>
+                </div>
+                <div class="final-message">
+                    <p>山水自有边界，生命不可任性。</p>
+                    <p>敬畏自然，才是户外探险的第一要义。</p>
+                    <div class="final-quote">"无限风光在险峰，但风光再美，也不及生命可贵。"</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>鳌太线 · 中华龙脊的生死考验 — 地图故事</p>
+        <p>数据来源：中国鳌太穿越事故调查报告、太白山国家级自然保护区管理局、公开新闻报道</p>
+        <p>本故事地图仅供教育警示用途，严禁用于任何非法穿越活动参考</p>
+    </footer>
+    <div class="designer-credit">Designed by <strong>Zheng Bohan</strong></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
